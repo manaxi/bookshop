@@ -1,0 +1,47 @@
+//---- Toggle Search
+.toggle-search__icon {
+    svg {
+        width: 24px;
+        height: 24px;
+
+        & circle {
+            stroke: $main-color;
+            stroke-width: 2px;
+            fill: none;
+        }
+
+        & rect {
+            fill: $main-color;
+        }
+
+        & line {
+            stroke: $main-color;
+        }
+    }
+}
+
+.toggle-search__icon--close {
+    svg * {
+        fill: $main-color;
+    }
+}
+
+.toggle-search {
+    .toggle-search__icon--close {
+        display: none;
+    }
+
+    .toggle-search__icon--open {
+        display: block;
+    }
+}
+
+.toggle-search.active {
+    .toggle-search__icon--open {
+        display: none;
+    }
+
+    .toggle-search__icon--close {
+        display: block;
+    }
+}

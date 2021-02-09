@@ -1,0 +1,59 @@
+.items {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 0.8rem;
+}
+
+.item {
+    position: relative;
+    overflow: hidden;
+
+    &-text-wrap {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    &-text-title {
+        font-size: 1.3rem;
+        font-weight: bold;
+        text-align: left;
+        padding-top: 0.5rem;
+        line-height: 1.3;
+
+        a {
+            position: relative;
+
+            &:after {
+                background: none repeat scroll 0 0 transparent;
+                top: 1rem;
+                content: "";
+                display: block;
+                height: 8px;
+                left: 0;
+                position: absolute;
+                background: $main-color;
+                opacity: 0.5;
+                transition: width 0.4s ease 0s, left 0.4s ease 0s;
+                width: 0;
+            }
+        }
+
+        a:hover:after {
+            width: 100%;
+            left: 0;
+        }
+    }
+
+    &-text-category {
+        text-transform: uppercase;
+        font-size: 0.875rem;
+        font-weight: bold;
+        text-align: left;
+        padding-top: 0.5rem;
+
+        a {
+            color: $ligh-dark-color;
+        }
+    }
+}

@@ -1,0 +1,29 @@
+//---- Transition
+@mixin transition($vals...) {
+    -webkit-transition: $vals;
+    -ms-transition: $vals;
+    transition: $vals;
+}
+
+$transition-speed: 0.25s;
+//underline
+@mixin underline($height) {
+    @include transition(background-size ease $transition-speed);
+    background: linear-gradient(
+            to bottom,
+            transparent $height,
+            $highlight-color-1 10%
+    );
+    background-size: 0% 100%;
+    background-repeat: no-repeat;
+    position: relative;
+    z-index: 30;
+    text-decoration: none;
+}
+
+//---- Transform
+@mixin transform($vals) {
+    -webkit-transform: $vals;
+    -ms-transform: $vals;
+    transform: $vals;
+}
