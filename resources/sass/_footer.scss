@@ -1,0 +1,15 @@
+#footer {
+    background: $dark-color;
+    color: #fff;
+    height: 5rem;
+    padding-top: 4rem;
+
+    .footer-container {
+        align-items: center;
+
+        p {
+            color: #fff;
+            font-size: 1rem;
+        }
+    }
+}
