@@ -30,10 +30,12 @@ Route::prefix('/dashboard')->name('dashboard.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('index');
     //Users books crud routing
     Route::prefix('books')->name('books.')->group(function () {
+        Route::get('index', [BooksController::class, 'index'])->name('index');
         Route::get('create', [BooksController::class, 'create'])->name('create');
         Route::post('store', [BooksController::class, 'store'])->name('store');
-        Route::get('edit', [BooksController::class, 'edit'])->name('edit');
-        Route::patch('update-{id}', [BooksController::class, 'update'])->name('update');
+        Route::get('edit-{id}', [BooksController::class, 'edit'])->name('edit');
+        Route::put('update-{id}', [BooksController::class, 'update'])->name('update');
         Route::delete('delete-{id}', [BooksController::class, 'destroy'])->name('delete');
     });
 });
+

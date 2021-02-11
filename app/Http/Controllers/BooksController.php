@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Datables;
 use Auth;
 use App\Models\Book;
 use App\Models\Author;
@@ -14,8 +15,40 @@ class BooksController extends Controller
 {
     public function index()
     {
-        $books = Book::orderBy('created_at', 'desc')->paginate(10);
-        return view('books.index');
+        if (request()->ajax()) {
+
+            $data = Auth::user()->books()->select('*');
+            return datatables()->of($data)
+                ->addColumn('cover_image', function ($row) {
+                    $url = asset('storage/cover_images/' . $row->cover_image);
+                    return '<img src="' . $url . '" border="0" width="80" height="150" class="img-rounded" align="center" />';
+                })
+                ->addColumn('authors', function ($row) {
+                    $authors = array();
+                    foreach ($row->authors as $author) {
+                        $authors[] = $author->name;
+                    }
+                    return $authors;
+                })
+                ->addColumn('genres', function ($row) {
+                    $genres = array();
+                    foreach ($row->genres as $genre) {
+                        $genres[] = $genre->name;
+                    }
+                    return $genres;
+                })
+                ->addColumn('status', function ($row) {
+                    if ($row->status == '0')
+                        return "Waiting for approval";
+                    else
+                        return "Approved";
+                })
+                ->addColumn('action', 'dashboard.books.action')
+                ->rawColumns(['action', 'authors', 'genres', 'cover_image'])
+                ->addIndexColumn()
+                ->make(true);
+        }
+        return view('dashboard.index');
     }
 
     /**
@@ -89,11 +122,9 @@ class BooksController extends Controller
         if (auth()->user()->id !== $book->user_id) {
             return redirect()->route('dashboard.index')->with('error', 'Unauthorized Page');
         }
-        $book_authors = Book::find($id)->authors;
-        $book_genres = Book::find($id)->genres;
-        $authors = Author::all();
-        $genres = Genre::all();
-        return view('dashboard.books.edit', compact('book', 'book_authors', 'book_genres', 'authors', 'genres'));
+        $authors = Author::get()->pluck('name', 'id');
+        $genres = Genre::get()->pluck('name', 'id');
+        return view('dashboard.books.edit', compact('book', 'authors', 'genres'));
     }
 
     /**
@@ -123,48 +154,36 @@ class BooksController extends Controller
             $fileNameToStore = $filename . '_' . time() . '.' . $extension;
             // Upload Image
             $path = $request->file('cover_image')->storeAs('public/cover_images', $fileNameToStore);
-
-            $book = Book::find($id);
-            $book->title = $request->input('title');
-            $book->slug = Str::slug($request->input('title'));
-            $book->description = $request->input('description');
-            $book->user_id = auth()->id();
-            $book->status = '0';
-            $book->price = $request->input('price');
-            $book->sale_price = $request->input('price');
-            if ($request->hasFile('cover_image')) {
-                $book->cover_image = $fileNameToStore;
-            }
-            $book->save();
-            if (isset($request->genres)) {
-                $book->genres()->sync($request->genres);
-            }
-            if (isset($request->authors)) {
-                $book->authors()->sync($request->authors);
-            }
-            return redirect()->route('dashboard.index')->with('success', 'Book updated');
-        }
-        /**
-         * Remove the specified resource from storage.
-         *
-         * @param int $id
-         * @return \Illuminate\Http\Response
-         */
-        function destroy($id)
-        {
-            $book = Book::find($id);
-            // Check for correct user
-            if (auth()->user()->id !== $book->user_id) {
-                return redirect()->route('dashboard.index')->with('error', 'Unauthorized Page');
-            }
-            if ($book->cover_image != 'noimage.jpg') {
-                // Delete Image
-                Storage::delete('public/cover_images/' . $book->cover_image);
-            }
-            $book->delete();
-            return redirect()->route('dashboard.index')->with('success', 'Book removed');
-
         }
 
+        $book = Book::find($id);
+        $book->title = $request->input('title');
+        $book->slug = Str::slug($request->input('title'));
+        $book->description = $request->input('description');
+        $book->user_id = auth()->id();
+        $book->status = '0';
+        $book->price = $request->input('price');
+        $book->sale_price = $request->input('price');
+        if ($request->hasFile('cover_image')) {
+            $book->cover_image = $fileNameToStore;
+        }
+        $book->save();
+        $book->genres()->sync((array)$request->input('genres'));
+        $book->authors()->sync((array)$request->input('authors'));
+        return redirect()->route('dashboard.index')->with('success', 'Book updated');
     }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Request $request)
+    {
+        $delete = Book::where('id', $request->id)->delete();
+        return redirect()->route('dashboard.index')->with('success', 'Book deleted');
+    }
+
+
 }

@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('page_title')Profile settings @endsection
+@section('page_title')Create book @endsection
 @section('content')
     <div class="container p-5">
         <h1 class="h3 mb-3">Add book to listing</h1>
@@ -7,10 +7,22 @@
         <div class="form-group py-2">
             {{Form::label('title', 'Title')}}
             {{Form::text('title', '', ['class' => 'form-control', 'placeholder' => 'Title'])}}
+            <p class="help-block"></p>
+            @if($errors->has('title'))
+                <p class="help-block">
+                    {{ $errors->first('title') }}
+                </p>
+            @endif
         </div>
         <div class="form-group py-2">
             {{Form::label('price', 'Price')}}
             {{Form::text('price', '', ['class' => 'form-control', 'placeholder' => 'Price'])}}
+            <p class="help-block"></p>
+            @if($errors->has('price'))
+                <p class="help-block">
+                    {{ $errors->first('price') }}
+                </p>
+            @endif
         </div>
         <div class="form-group">
             {{Form::label('description', 'Description')}}
