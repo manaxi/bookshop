@@ -6,39 +6,66 @@
         <a class="btn btn-primary" href="{{route('dashboard.books.create')}}" role="button">Add book</a>
 
         <h3>Your Books</h3>
-        @if(count($user_books) > 0)
-            <table class="table table-striped">
-                <tr>
-                    <th></th>
-                    <th>Title</th>
-                    <th>Authors</th>
-                    <th>Genre</th>
-                </tr>
-                @foreach($user_books as $book)
-                    <tr>
-                        <td><img src="/storage/cover_images/{{$book->cover_image}}" alt="" width="100" height="200"/>
-                        </td>
-                        <td>{{$book->title}}</td>
-                        <td>
-                            @foreach($book->authors as $author)
-                                {{$author->name}} |
-                            @endforeach
-                        </td>
-                        <td>
-                            @foreach($book->genres as $genre)
-                                {{$genre->name}} |
-                            @endforeach
-                        </td>
-                    </tr>
-                @endforeach
-                <div class="d-flex justify-content-center">
-                    {!! $user_books->links() !!}
-                </div>
-                @else
-                    <p>No books found</p>
-            </table>
-        @endif
+        <table class="table table-bordered" id="datatable-crud">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Cover</th>
+                <th>Title</th>
+                <th>Authors</th>
+                <th>Genres</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+        </table>
     </div>
+@endsection
+
+@section('script')
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $('#datatable-crud').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{ route('dashboard.books.index') }}",
+                columns: [
+                    {data: 'id', name: 'id'},
+                    {data: 'cover_image', name: 'cover_image'},
+                    {data: 'title', name: 'title'},
+                    {data: 'authors', name: 'authors'},
+                    {data: 'genres', name: 'genres'},
+                    {data: 'status', name: 'status'},
+                    {data: 'action', name: 'action', orderable: false},
+                ],
+                order: [[0, 'desc']]
+            });
+            $('body').on('click', '.delete', function () {
+                if (confirm("Delete Record?") == true) {
+                    var id = $(this).data('id');
+// ajax
+                    $.ajax({
+                        type: "DELETE",
+                        url: "{{ url('dashboard/books/delete') }}",
+                        data: {method: '_DELETE', submit: true},
+                        dataType: 'json',
+                        success: function (res) {
+                            var oTable = $('#datatable-crud').dataTable();
+                            oTable.fnDraw(false);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 @endsection
 
 
