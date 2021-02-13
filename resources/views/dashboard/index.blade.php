@@ -23,7 +23,6 @@
 @endsection
 
 @section('script')
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 
     <script type="text/javascript">
@@ -47,22 +46,6 @@
                     {data: 'action', name: 'action', orderable: false},
                 ],
                 order: [[0, 'desc']]
-            });
-            $('body').on('click', '.delete', function () {
-                if (confirm("Delete Record?") == true) {
-                    var id = $(this).data('id');
-// ajax
-                    $.ajax({
-                        type: "DELETE",
-                        url: "{{ url('dashboard/books/delete') }}",
-                        data: {method: '_DELETE', submit: true},
-                        dataType: 'json',
-                        success: function (res) {
-                            var oTable = $('#datatable-crud').dataTable();
-                            oTable.fnDraw(false);
-                        }
-                    });
-                }
             });
         });
     </script>

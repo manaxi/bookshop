@@ -6,17 +6,22 @@
         @if(count($books) > 0)
             @foreach($books as $book)
                 <div class="ml-4" style="width: 12rem;">
-                    <img class="card-img-top" src="/storage/cover_images/{{$book->cover_image}}" alt=""/>
-                    <div class="card-body">
-                        <h5 class="card-title">{{$book->title}}</h5>
-                        <p class="card-text">
+                    <div class="card">
+                        <img class="card-img-top" src="/storage/cover_images/{{$book->cover_image}}" alt=""/>
+                        @if($current_dateTime <= $book->created_at)
+                            <span class="badge badge-primary">NEW</span>
+                        @endif
+                        <h5 class="text-center">{{$book->title}}</h5>
+                        <h6 class="card-text text-center">
                             @foreach($book->authors as $author)
                                 @if($loop->first)
                                     {{$author->name}}
                                 @endif
                             @endforeach
-                        </p>
-                        <a href="" class="btn btn-primary">${{$book->price}}</a>
+                        </h6>
+                        <a href="{{route('show_book', $book->id)}}}"><h5 class="text-center text-primary bold">
+                                ${{$book->price}}</h5>
+                        </a>
                     </div>
                 </div>
             @endforeach
