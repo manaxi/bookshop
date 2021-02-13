@@ -36,6 +36,11 @@
                             {{ Auth::user()->name }}
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                            @hasrole('Admin')
+                            <a class="dropdown-item" href="{{ route('admin.index') }}">
+                                Admin dashboard
+                            </a>
+                            @endrole
                             <a class="dropdown-item" href="{{ route('dashboard.index') }}">
                                 Dashboard
                             </a>
