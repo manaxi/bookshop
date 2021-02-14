@@ -26,7 +26,7 @@ Route::get('/book/{slug}', [PagesController::class, 'show_book'])->name('show_bo
 Route::get('/search', [PagesController::class, 'books_search'])->name('search');
 
 Route::group(['middleware' => ['role:User']], function () {
-    Route::post('/rating', [\App\Http\Controllers\RatingsController::class, 'store'])->name('ratingStore');
+    Route::post('rating', [\App\Http\Controllers\RatingsController::class, 'store'])->name('ratingStore');
     Route::resource('reviews', \App\Http\Controllers\ReviewsController::class);
 });
 

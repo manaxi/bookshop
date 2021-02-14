@@ -14,7 +14,7 @@ class Book extends Model
     protected $table = 'books';
     //primary key
     public $primaryKey = 'id';
-
+    protected $appends = ['discounted_price'];
     protected $fillable = [
         'title',
         'slug',
@@ -45,8 +45,17 @@ class Book extends Model
     {
         return $this->belongsTo(User::class);
     }
+
     public function reviews()
     {
         return $this->hasMany(Review::class);
+    }
+
+    public function getDiscountedPriceAttribute()
+    {
+        if($this->sale_price > '0')
+            return round($this->price - ($this->sale_price / 100) * $this->price, 2);
+        else
+            return $this->price;
     }
 }

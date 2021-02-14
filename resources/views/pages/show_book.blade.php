@@ -39,7 +39,12 @@
                                     </form>
                                 </div>
                                 <div class="mb-3">
-                                    <span class="price h4">${{$book->price}}</span>
+                                    @if($book->sale_price > 0)
+                                        <span class="price h4">${{$book->discounted_price}}</span>
+                                        <span class="price h6">old price {{$book->price}} </span>
+                                    @else
+                                        <span class="price h4">{{$book->price}} </span>
+                                    @endif
                                 </div>
                                 {!! $book->description !!}
                                 <hr>
@@ -143,8 +148,10 @@
                         type: 'POST',
                         cache: false,
                         dataType: 'JSON',
-                        url: $(this).attr('action'),
-                        data: $(this).serialize(),
+                        url: "{{route('ratingStore')}}",
+                        data: {
+                            star: $('#name').val(),
+                        },
                         success: function (data) {
                             console.log(data);
                         }

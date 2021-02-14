@@ -31,7 +31,7 @@ class BookFactory extends Factory
             'price' => $this->faker->randomFloat(2,0,90),
             'sale_price' => $this->faker->numberBetween(0, 100),
             'description' => $this->faker->paragraph,
-            'cover_image' => $this->faker->image('storage/app/public/cover_images', 400 ,300,null , false),
+            'cover_image' => $this->faker->image('public/storage/cover_images', 400 ,300,null , false),
             'user_id' => User::all()->random()->id,
             'status' => '1'
         ];
