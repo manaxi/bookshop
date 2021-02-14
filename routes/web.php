@@ -8,6 +8,7 @@ use App\Http\Controllers\dashboard\BooksController;
 use App\Http\Controllers\admin\BooksController as BooksAdminController;
 use App\Http\Controllers\admin\AuthorsController;
 use App\Http\Controllers\admin\GenresController;
+use App\Http\Controllers\admin\ReportsController as ReportsControllerAdmin;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,6 +29,7 @@ Route::get('/search', [PagesController::class, 'books_search'])->name('search');
 Route::group(['middleware' => ['role:User']], function () {
     Route::post('rating', [\App\Http\Controllers\RatingsController::class, 'store'])->name('ratingStore');
     Route::resource('reviews', \App\Http\Controllers\ReviewsController::class);
+    Route::resource('reports', \App\Http\Controllers\ReportsController::class);
 });
 
 Route::prefix('/settings')->name('settings.')->middleware('role:User')->group(function () {
@@ -49,5 +51,7 @@ Route::prefix('/admin')->name('admin.')->middleware('role:Admin')->group(functio
     Route::resource('authors', AuthorsController::class);
     //genres
     Route::resource('genres', GenresController::class);
+    //reports
+    Route::resource('reports', ReportsControllerAdmin::class);
 });
 

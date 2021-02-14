@@ -49,6 +49,13 @@
                                 {!! $book->description !!}
                                 <hr>
                             </article>
+                            @if(Auth::check())
+                                <button id="addReport" type="button" class="btn btn-primary mt-3 pull-right"
+                                        data-toggle="modal"
+                                        data-target="#reportModal">
+                                    Report book
+                                </button>
+                            @endif
                         </main>
                     </div>
                 </div>
@@ -111,7 +118,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Review</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -135,37 +142,71 @@
                 </div>
             </div>
         </div>
-        @endsection
-        @section('script')
-            <script>
-                $('#addStar').change('.star', function (e) {
-                    $.ajaxSetup({
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                        }
-                    });
-                    $.ajax({
-                        type: 'POST',
-                        cache: false,
-                        dataType: 'JSON',
-                        url: "{{route('ratingStore')}}",
-                        data: {
-                            star: $('#name').val(),
-                        },
-                        success: function (data) {
-                            console.log(data);
-                        }
-                    });
-                });
-                $('#reviewModal').on('show.bs.modal', function (event) {
-                    var button = $(event.relatedTarget) // Button that triggered the modal
-                    var id = button.data('id');
-                    var review = button.data('review');
-                    console.log(id);
-                    var modal = $(this);
-                    modal.find('.modal-body #id').val(id);
-                    modal.find('.modal-body #review').val(review);
-                });
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Report book</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{ Form::open(['route' => ['reports.store'], 'method' => 'POST']) }}
+                    <div class="form-group col-lg">
+                        {{Form::label('review', 'Review')}}
+                        {{Form::textarea('body', '', ['id' => 'editor', 'class' => 'form-control', 'placeholder' => 'Review text'])}}
+                        {{ Form::hidden('book_id', $book->id) }}
+                    </div>
+                    <div class="modal-footer">
+                        {{Form::submit('Submit', ['class'=>'btn btn-primary'])}}
+                    </div>
+                    {{ Form::close() }}
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+@endsection
+@section('script')
+    <script>
+        $('#addStar').change('.star', function (e) {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                }
+            });
+            $.ajax({
+                type: 'POST',
+                cache: false,
+                dataType: 'JSON',
+                url: "{{route('ratingStore')}}",
+                data: {
+                    star: $('#name').val(),
+                },
+                success: function (data) {
+                    console.log(data);
+                }
+            });
+        });
+        $('#reviewModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var id = button.data('id');
+            var review = button.data('review');
+            console.log(id);
+            var modal = $(this);
+            modal.find('.modal-body #id').val(id);
+            modal.find('.modal-body #review').val(review);
+        });
+        $('#reportModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var id = button.data('id');
+            console.log(id);
+            var modal = $(this);
+            modal.find('.modal-body #id').val(id);
+        });
 
-            </script>
+    </script>
 @endsection

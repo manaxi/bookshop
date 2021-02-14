@@ -28,6 +28,9 @@
                 <li><a href="{{route('admin.genres.index')}}"
                        class="nav-link {{ (request()-> routeIs('admin.genres*')) ? 'active ' : '' }}"><i
                             class="fa fa-folder"></i> <span>Genres</span></a></li>
+                <li><a href="{{route('admin.reports.index')}}"
+                       class="nav-link {{ (request()-> routeIs('admin.reports*')) ? 'active ' : '' }}"><i
+                            class="fa fa-folder"></i> <span>Reports</span></a></li>
             </ul>
         </nav>
         <!-- /.sidebar-menu -->
