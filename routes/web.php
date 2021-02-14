@@ -24,6 +24,11 @@ Auth::routes();
 Route::get('/', [PagesController::class, 'index'])->name('index');
 Route::get('/book/{slug}', [PagesController::class, 'show_book'])->name('show_book');
 
+Route::group(['middleware' => ['role:User']], function () {
+    Route::post('/rating', [\App\Http\Controllers\RatingsController::class, 'store'])->name('ratingStore');
+    Route::resource('reviews', \App\Http\Controllers\ReviewsController::class);
+});
+
 Route::prefix('/settings')->name('settings.')->middleware('role:User')->group(function () {
     Route::get('/', [UsersController::class, 'profile'])->name('profile');
     Route::post('settings', [UsersController::class, 'updateProfile'])->name('updateProfile');
