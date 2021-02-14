@@ -10,9 +10,14 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <!-- Left Side Of Navbar -->
-            <ul class="navbar-nav mr-auto">
-
-            </ul>
+            <form action="{{ route('search') }}" method="GET">
+                <div class="input-group">
+                    <div class="form-outline">
+                        <input type="search" id="form1" name="search" class="form-control" required/>
+                    </div>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i></button>
+                </div>
+            </form>
 
             <!-- Right Side Of Navbar -->
             <ul class="navbar-nav ml-auto">

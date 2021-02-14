@@ -10,10 +10,10 @@
                         <div class="img-wrap">
                             @if($current_dateTime <= $book->created_at)
                                 <span class="badge badge-primary">NEW</span>
-                                @else
+                            @else
                                 <span class="badge badge-primary"></span>
                             @endif
-                            <a href="{{route('show_book', $book->id)}}}"><img class="card-img-top" src="/storage/cover_images/{{$book->cover_image}}" alt=""/></a>
+                            <img class="card-img-top" src="/storage/cover_images/{{$book->cover_image}}" alt=""/>
                         </div>
                         <div class="info-wrap">
                             <h4 class="text-center">{{$book->title}}</h4>
