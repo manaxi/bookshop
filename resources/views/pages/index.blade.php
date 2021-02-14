@@ -10,10 +10,17 @@
                         <div class="img-wrap">
                             @if($current_dateTime <= $book->created_at)
                                 <span class="badge badge-primary">NEW</span>
-                                @else
+                            @else
                                 <span class="badge badge-primary"></span>
                             @endif
-                            <a href="{{route('show_book', $book->id)}}}"><img class="card-img-top" src="/storage/cover_images/{{$book->cover_image}}" alt=""/></a>
+                            @if($book->sale_price > 0)
+                                <div class="discount-icon">
+                                    <span class="badge badge-primary pt-8">-%{{$book->sale_price}}</span>
+                                </div>
+                            @endif
+                            <a href="{{route('show_book', $book->id)}}}"><img class="card-img-top"
+                                                                              src="/storage/cover_images/{{$book->cover_image}}"
+                                                                              alt=""/></a>
                         </div>
                         <div class="info-wrap">
                             <h4 class="text-center">{{$book->title}}</h4>
@@ -26,8 +33,12 @@
                             </h6>
                             <div class="price text-center">
                                 <div class="mb-3">
-                                    <span class="price h4">${{$book->sale_price}}</span>
-                                    <span class="price text-muted">${{$book->price}}</span>
+                                    @if($book->sale_price >0)
+                                        <span class="price h4">${{$book->discounted_price}}</span>
+                                        <span class="price text-muted">${{$book->price}}</span>
+                                        @else
+                                        <span class="price h4">${{$book->price}}</span>
+                                    @endif
                                 </div>
                             </div>
                         </div>

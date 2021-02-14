@@ -12,7 +12,7 @@ class UsersController extends Controller
 
     function __construct()
     {
-        $this->middleware('permission:user_settings', ['only' => 'profile', 'updateProfile', 'updatePassword']);
+        $this->middleware('role:User', ['only' => 'profile', 'updateProfile', 'updatePassword']);
     }
 
     public function profile()

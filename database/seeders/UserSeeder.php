@@ -7,7 +7,7 @@ use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
-class CreateUserSeeder extends Seeder
+class UserSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -23,11 +23,16 @@ class CreateUserSeeder extends Seeder
             'email' => 'user@gmail.com',
             'password' => bcrypt('123456')
         ]);
-
+        $adminUser = User::create([
+            'name' => 'Admin',
+            'surname' => 'Admin',
+            'date_of_birth' => '1996-10-06',
+            'email' => 'admin@gmail.com',
+            'password' => bcrypt('admin123')
+        ]);
+        $adminRole = Role::create(['name' => 'Admin']);
         $role = Role::create(['name' => 'User']);
-        $permissions = Permission::pluck('id', 'id')->all();
-
-        $role->syncPermissions($permissions);
+        $adminUser->assignRole([$adminRole->id, $role->id]);
         $user->assignRole([$role->id]);
     }
 }
