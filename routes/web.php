@@ -23,6 +23,7 @@ Auth::routes();
 
 Route::get('/', [PagesController::class, 'index'])->name('index');
 Route::get('/book/{slug}', [PagesController::class, 'show_book'])->name('show_book');
+Route::get('/search', [PagesController::class, 'books_search'])->name('search');
 
 Route::group(['middleware' => ['role:User']], function () {
     Route::post('/rating', [\App\Http\Controllers\RatingsController::class, 'store'])->name('ratingStore');
