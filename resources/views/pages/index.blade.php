@@ -13,7 +13,7 @@
                                 @else
                                 <span class="badge badge-primary"></span>
                             @endif
-                            <img class="card-img-top" src="/storage/cover_images/{{$book->cover_image}}" alt=""/>
+                            <a href="{{route('show_book', $book->id)}}}"><img class="card-img-top" src="/storage/cover_images/{{$book->cover_image}}" alt=""/></a>
                         </div>
                         <div class="info-wrap">
                             <h4 class="text-center">{{$book->title}}</h4>

@@ -15,6 +15,9 @@ Created with:
 -   MySQL 5.7.26
 -   Laravel 8.12
 
+## About
+> About book page
+> ![img_1.png](img_1.png)
 ## Author
 
 > Mantas Pečiulis

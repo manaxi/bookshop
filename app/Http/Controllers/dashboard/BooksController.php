@@ -169,7 +169,7 @@ class BooksController extends Controller
         $book->slug = Str::slug($request->input('title'));
         $book->description = $request->input('description');
         $book->user_id = auth()->id();
-        $book->status = '0';
+        $book->status = $book->status;
         $book->price = $request->input('price');
         $book->sale_price = $request->input('sale_price');
         if ($request->hasFile('cover_image')) {
