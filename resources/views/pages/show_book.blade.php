@@ -91,7 +91,7 @@
                     <div class="col-sm-10 mt-3">
                         <p>{{$review->review}}</p>
                     </div>
-                    @if($review->user->id == Auth::id())
+                    @if($review->user_id == auth()->id())
                         <form action="{{ route('reviews.destroy', $review->id)}}" method="post"
                               onsubmit="return confirm('Are your sure?');">
                             @csrf
