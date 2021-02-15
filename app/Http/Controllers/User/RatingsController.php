@@ -14,11 +14,10 @@ class RatingsController extends Controller
         $this->validate($request,[
             'star' => 'required',
         ]);
-        $book = Book::findOrFail($request->book_id);
         $rating = Rating::create([
             'rate' => $request->star,
             'user_id' => Auth::id(),
-            'book_id' => $book->id,
+            'book_id' => $request->book_id,
         ]);
         return response()->json(['rating' => $rating->rate]);
        // return redirect()->route('show_book', $book->id)->with('success', 'Rating added');

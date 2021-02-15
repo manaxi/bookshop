@@ -24,7 +24,7 @@
                                     @endforeach
                                 </h6>
                                 <div class="rating-wrap pull-right">
-                                    <form id="addStar" action="{{route('ratingStore')}}" method="POST">
+                                    <form id="addStar" action="{{route('ratings.store')}}" method="POST">
                                         <input class="star star-5" value="5" id="star-5" type="radio" name="star"/>
                                         <input type="hidden" name="id" id="name" value="{{ $book->id}}">
                                         <label class="star star-5" for="star-5"></label>
@@ -182,7 +182,7 @@
                 type: 'POST',
                 cache: false,
                 dataType: 'JSON',
-                url: "{{route('ratingStore')}}",
+                url: "{{route('ratings.store')}}",
                 data: {
                     book_id: {{ $book->id }},
                     star: $('#name').val(),

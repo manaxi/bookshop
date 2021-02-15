@@ -28,7 +28,7 @@ Route::get('/', [BooksController::class, 'index'])->name('index');
 Route::resource('books', BooksController::class);
 
 Route::group(['middleware' => ['role:User']], function () {
-    Route::post('rating', [RatingsController::class, 'store'])->name('ratingStore');
+    Route::resource('ratings', RatingsController::class);
     Route::resource('reviews', ReviewsController::class);
     Route::resource('reports', ReportsController::class);
 
