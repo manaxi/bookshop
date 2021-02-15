@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Book;
 use App\Models\Review;
@@ -11,7 +12,7 @@ class ReviewsController extends Controller
 {
     public function store(Request $request)
     {
-        $this->validate($request,[
+        $this->validate($request, [
             'review' => 'required|max:255',
         ]);
         $book = Book::findOrFail($request->book_id);
@@ -20,7 +21,7 @@ class ReviewsController extends Controller
             'user_id' => Auth::id(),
             'book_id' => $book->id,
         ]);
-        return redirect()->route('show_book', $book->id)->with('success', 'Review added');
+        return redirect()->route('books.show', $book->slug)->with('success', 'Review added');
     }
 
     public function edit($id)
@@ -36,18 +37,18 @@ class ReviewsController extends Controller
 
     public function update(Request $request, $id)
     {
-        $this->validate($request,[
+        $this->validate($request, [
             'review' => 'required|max:255',
         ]);
         $review = Review::find($request->id);
         $review->review = $request->input('review');
         $review->update();
-        return redirect()->route('show_book', $review->book_id)->with('success', 'Review updated');
+        return redirect()->route('books.show', $review->book->slug)->with('success', 'Review updated');
     }
 
     public function destroy(Review $review)
     {
         $review->delete();
-        return redirect()->route('show_book', $review->book_id)->with('success', 'Review deleted');
+        return redirect()->route('books.show', $review->book->slug)->with('success', 'Review deleted');
     }
 }

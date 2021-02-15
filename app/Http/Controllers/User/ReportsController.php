@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Http\Controllers\Controller;
 use App\Models\Book;
 use App\Models\Report;
 use Auth;
@@ -21,6 +22,6 @@ class ReportsController extends Controller
             'user_id' => Auth::id(),
             'book_id' => $book->id,
         ]);
-        return redirect()->route('show_book', $book->id)->with('success', 'Report added');
+        return redirect()->route('books.show', $book->slug)->with('success', 'Report added');
     }
 }
