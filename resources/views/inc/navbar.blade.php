@@ -46,11 +46,11 @@
                                 Admin dashboard
                             </a>
                             @endrole
-                            <a class="dropdown-item" href="{{ route('dashboard.index') }}">
-                                Dashboard
+                            <a class="dropdown-item" href="{{ route('dashboard.books.index') }}">
+                                My Books
                             </a>
                             <a class="dropdown-item" href="{{ route('settings.profile') }}">
-                                Profile
+                                Settings
                             </a>
                             <a class="dropdown-item" href="{{ route('logout') }}"
                                onclick="event.preventDefault();

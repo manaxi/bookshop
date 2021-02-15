@@ -1,19 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\dashboard;
+namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Auth;
 
-class UsersController extends Controller
+class SettingsController extends Controller
 {
-
-    function __construct()
-    {
-        $this->middleware('role:User', ['only' => 'profile', 'updateProfile', 'updatePassword']);
-    }
 
     public function profile()
     {

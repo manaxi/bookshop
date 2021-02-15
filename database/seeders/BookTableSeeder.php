@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use App\Models\Author;
 use App\Models\Genre;
 use App\Models\Book;
+
 class BookTableSeeder extends Seeder
 {
     /**

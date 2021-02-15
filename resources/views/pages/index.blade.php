@@ -18,7 +18,7 @@
                                     <span class="badge badge-primary pt-8">-%{{$book->sale_price}}</span>
                                 </div>
                             @endif
-                            <a href="{{route('show_book', $book->id)}}}"><img class="card-img-top"
+                            <a href="{{route('show_book', $book->id)}}"><img class="card-img-top"
                                                                               src="/storage/cover_images/{{$book->cover_image}}"
                                                                               alt=""/></a>
                         </div>

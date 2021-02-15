@@ -26,7 +26,7 @@
                                 <div class="rating-wrap pull-right">
                                     <form id="addStar" action="{{route('ratingStore')}}" method="POST">
                                         <input class="star star-5" value="5" id="star-5" type="radio" name="star"/>
-                                        <input type="hidden" name="id" value="{{ $book->id}}">
+                                        <input type="hidden" name="id" id="name" value="{{ $book->id}}">
                                         <label class="star star-5" for="star-5"></label>
                                         <input class="star star-4" value="4" id="star-4" type="radio" name="star"/>
                                         <label class="star star-4" for="star-4"></label>
@@ -184,6 +184,7 @@
                 dataType: 'JSON',
                 url: "{{route('ratingStore')}}",
                 data: {
+                    book_id: {{ $book->id }},
                     star: $('#name').val(),
                 },
                 success: function (data) {

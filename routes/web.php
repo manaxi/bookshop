@@ -1,14 +1,16 @@
 <?php
 
+use App\Http\Controllers\User\RatingsController;
+use App\Http\Controllers\User\ReportsController;
+use App\Http\Controllers\User\ReviewsController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PagesController;
-use App\Http\Controllers\dashboard\UsersController;
-use App\Http\Controllers\dashboard\DashboardController;
-use App\Http\Controllers\dashboard\BooksController;
-use App\Http\Controllers\admin\BooksController as BooksAdminController;
-use App\Http\Controllers\admin\AuthorsController;
-use App\Http\Controllers\admin\GenresController;
-use App\Http\Controllers\admin\ReportsController as ReportsControllerAdmin;
+use App\Http\Controllers\User\SettingsController;
+use App\Http\Controllers\User\BooksController;
+use App\Http\Controllers\Admin\BooksController as BooksAdminController;
+use App\Http\Controllers\Admin\AuthorsController;
+use App\Http\Controllers\Admin\GenresController;
+use App\Http\Controllers\Admin\ReportsController as ReportsControllerAdmin;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,20 +29,19 @@ Route::get('/book/{slug}', [PagesController::class, 'show_book'])->name('show_bo
 Route::get('/search', [PagesController::class, 'books_search'])->name('search');
 
 Route::group(['middleware' => ['role:User']], function () {
-    Route::post('rating', [\App\Http\Controllers\RatingsController::class, 'store'])->name('ratingStore');
-    Route::resource('reviews', \App\Http\Controllers\ReviewsController::class);
-    Route::resource('reports', \App\Http\Controllers\ReportsController::class);
-});
+    Route::post('rating', [RatingsController::class, 'store'])->name('ratingStore');
+    Route::resource('reviews', ReviewsController::class);
+    Route::resource('reports', ReportsController::class);
 
-Route::prefix('/settings')->name('settings.')->middleware('role:User')->group(function () {
-    Route::get('/', [UsersController::class, 'profile'])->name('profile');
-    Route::post('settings', [UsersController::class, 'updateProfile'])->name('updateProfile');
-    Route::post('settings/password', [UsersController::class, 'updatePassword'])->name('changePassword');
-});
+    Route::prefix('/settings')->name('settings.')->group(function () {
+        Route::get('/', [SettingsController::class, 'profile'])->name('profile');
+        Route::post('settings', [SettingsController::class, 'updateProfile'])->name('updateProfile');
+        Route::post('settings/password', [SettingsController::class, 'updatePassword'])->name('changePassword');
+    });
 
-Route::prefix('/dashboard')->name('dashboard.')->middleware('role:User')->group(function () {
-    Route::get('/', [DashboardController::class, 'index'])->name('index');
-    Route::resource('books', BooksController::class);
+    Route::prefix('/dashboard')->name('dashboard.')->group(function () {
+        Route::resource('books', BooksController::class);
+    });
 });
 
 Route::prefix('/admin')->name('admin.')->middleware('role:Admin')->group(function () {
