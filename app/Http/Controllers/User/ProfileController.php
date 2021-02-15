@@ -7,12 +7,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Auth;
 
-class SettingsController extends Controller
+class ProfileController extends Controller
 {
 
     public function profile()
     {
-        return view('dashboard.settings.index', array('user' => Auth::user()));
+        return view('dashboard.profile.index', array('user' => Auth::user()));
     }
 
     /**
@@ -34,7 +34,7 @@ class SettingsController extends Controller
         $user->surname = $request->input('surname');
         $user->email = $request->input('email');
         $user->save();
-        return redirect()->route('settings.profile')->with('success', 'Profile was changed.');
+        return redirect()->route('profile.show')->with('success', 'Profile was changed.');
     }
 
     /**

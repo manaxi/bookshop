@@ -115,7 +115,7 @@ class BooksController extends Controller
         $book->genres()->sync($request->genres);
         $book->authors()->sync($author_id);
 
-        return redirect()->route('dashboard.index')->with('success', 'Book created.');
+        return redirect()->route('dashboard.books.index')->with('success', 'Book created.');
     }
 
     /**
@@ -178,7 +178,7 @@ class BooksController extends Controller
         $book->save();
         $book->genres()->sync((array)$request->input('genres'));
         $book->authors()->sync((array)$request->input('authors'));
-        return redirect()->route('dashboard.index')->with('success', 'Book updated');
+        return redirect()->route('dashboard.books.index')->with('success', 'Book updated');
     }
 
     /**
@@ -190,7 +190,7 @@ class BooksController extends Controller
     public function destroy($id)
     {
         $delete = Book::where('id', $id)->delete();
-        return redirect()->route('dashboard.index')->with('success', 'Book deleted');
+        return redirect()->route('dashboard.books.index')->with('success', 'Book deleted');
     }
 
 
