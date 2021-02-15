@@ -1,7 +1,5 @@
 const mix = require('laravel-mix');
-mix.browserSync({
-    proxy: 'bookshop.me'
-});
+
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management
@@ -14,5 +12,4 @@ mix.browserSync({
  */
 
 mix.js('resources/js/app.js', 'public/js').vue()
-    .sass('resources/sass/app.scss', 'public/css')
-    .sourceMaps();
+    .sass('resources/sass/app.scss', 'public/css');

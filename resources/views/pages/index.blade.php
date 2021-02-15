@@ -2,7 +2,7 @@
 @section('page_title')Home page @endsection
 @section('content')
     <h1 class="mt-5">Books list</h1>
-    <div class="row ">
+    <div class="row">
         @forelse($books as $book)
             <div class="ml-4" style="width: 12rem;">
                 <div class="card-books-grid">
@@ -18,8 +18,8 @@
                             </div>
                         @endif
                         <a href="{{route('books.show', $book->slug)}}"><img class="card-img-top"
-                                                                         src="/storage/cover_images/{{$book->cover_image}}"
-                                                                         alt=""/></a>
+                                                                            src="/storage/cover_images/{{$book->cover_image}}"
+                                                                            alt=""/></a>
                     </div>
                     <div class="info-wrap">
                         <h4 class="text-center">{{$book->title}}</h4>
@@ -43,9 +43,11 @@
                     </div>
                 </div>
             </div>
-            {{$books->links()}}
         @empty
             <p>No books found</p>
         @endforelse
+    </div>
+    <div class="row justify-content-md-center mt-4">
+        {{$books->links()}}
     </div>
 @endsection

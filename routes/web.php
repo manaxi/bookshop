@@ -28,13 +28,13 @@ Route::get('/', [BooksController::class, 'index'])->name('index');
 Route::resource('books', BooksController::class);
 
 Route::group(['middleware' => ['role:User']], function () {
-    Route::post('rating', [RatingsController::class, 'store'])->name('ratingStore');
+    Route::resource('ratings', RatingsController::class);
     Route::resource('reviews', ReviewsController::class);
     Route::resource('reports', ReportsController::class);
 
     Route::prefix('/profile')->name('profile.')->group(function () {
         Route::get('/', [ProfileController::class, 'profile'])->name('show');
-        Route::post('pofile', [ProfileController::class, 'updateProfile'])->name('updateProfile');
+        Route::post('profile', [ProfileController::class, 'updateProfile'])->name('updateProfile');
         Route::post('profile/password', [ProfileController::class, 'updatePassword'])->name('changePassword');
     });
 
