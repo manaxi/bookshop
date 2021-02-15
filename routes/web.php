@@ -34,7 +34,7 @@ Route::group(['middleware' => ['role:User']], function () {
 
     Route::prefix('/profile')->name('profile.')->group(function () {
         Route::get('/', [ProfileController::class, 'profile'])->name('show');
-        Route::post('pofile', [ProfileController::class, 'updateProfile'])->name('updateProfile');
+        Route::post('profile', [ProfileController::class, 'updateProfile'])->name('updateProfile');
         Route::post('profile/password', [ProfileController::class, 'updatePassword'])->name('changePassword');
     });
 
