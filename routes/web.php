@@ -5,7 +5,7 @@ use App\Http\Controllers\User\ReportsController;
 use App\Http\Controllers\User\ReviewsController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BooksController;
-use App\Http\Controllers\User\ProfileController;
+use App\Http\Controllers\User\SettingsController;
 use App\Http\Controllers\User\BooksController as BooksControllerUser;
 use App\Http\Controllers\Admin\BooksController as BooksControllerAdmin;
 use App\Http\Controllers\Admin\AuthorsController;
@@ -32,10 +32,10 @@ Route::group(['middleware' => ['role:User']], function () {
     Route::resource('reviews', ReviewsController::class);
     Route::resource('reports', ReportsController::class);
 
-    Route::prefix('/profile')->name('profile.')->group(function () {
-        Route::get('/', [ProfileController::class, 'profile'])->name('show');
-        Route::post('profile', [ProfileController::class, 'updateProfile'])->name('updateProfile');
-        Route::post('profile/password', [ProfileController::class, 'updatePassword'])->name('changePassword');
+    Route::prefix('/settings')->name('settings.')->group(function () {
+        Route::get('/', [SettingsController::class, 'profile'])->name('show');
+        Route::post('settings', [SettingsController::class, 'updateProfile'])->name('updateProfile');
+        Route::post('settings/password', [SettingsController::class, 'updatePassword'])->name('changePassword');
     });
 
     Route::prefix('/dashboard')->name('dashboard.')->group(function () {

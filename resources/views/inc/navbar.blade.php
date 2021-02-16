@@ -49,7 +49,7 @@
                             <a class="dropdown-item" href="{{ route('dashboard.books.index') }}">
                                 My Books
                             </a>
-                            <a class="dropdown-item" href="{{ route('profile.show') }}">
+                            <a class="dropdown-item" href="{{ route('settings.show') }}">
                                 My profile
                             </a>
                             <a class="dropdown-item" href="{{ route('logout') }}"

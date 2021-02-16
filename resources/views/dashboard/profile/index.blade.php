@@ -36,7 +36,7 @@
                                 <h5 class="card-title mb-0">Private info</h5>
                             </div>
                             <div class="card-body">
-                                <form enctype="multipart/form-data" action="{{route('profile.updateProfile')}}"
+                                <form enctype="multipart/form-data" action="{{route('settings.updateProfile')}}"
                                       method="POST">
                                     {{ csrf_field() }}
                                     <div class="form-row">
@@ -68,7 +68,7 @@
                             <div class="card-body">
                                 <h5 class="card-title">Password</h5>
 
-                                <form enctype="multipart/form-data" action="{{route('profile.changePassword')}}"
+                                <form enctype="multipart/form-data" action="{{route('settings.changePassword')}}"
                                       method="POST">
                                     {{ csrf_field() }}
                                     <div class="form-group {{ $errors->has('old_password') ? ' has-error' : '' }}">

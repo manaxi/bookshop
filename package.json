@@ -23,13 +23,15 @@
         "sass": "^1.20.1",
         "sass-loader": "^8.0.0",
         "vue": "^2.5.17",
-        "vue-loader": "^15.9.5",
-        "vue-template-compiler": "^2.6.10",
+        "vue-loader": "^15.9.6",
+        "vue-template-compiler": "^2.6.12",
         "webpack-cli": "^4.5.0"
     },
     "dependencies": {
         "@voerro/vue-tagsinput": "^2.4.3",
         "bootstrap-sass": "^3.4.1",
-        "cross-env": "^7.0.3"
+        "bootstrap-vue": "^2.21.2",
+        "cross-env": "^7.0.3",
+        "vue-awesome": "^4.1.0"
     }
 }
