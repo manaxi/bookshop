@@ -48,6 +48,11 @@ class Book extends Model
         return $this->hasMany(Review::class);
     }
 
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class);
+    }
+
     public function scopeApproved($query)
     {
         return $query->where('status', '1');
@@ -69,5 +74,14 @@ class Book extends Model
     public function getIsNewAttribute()
     {
         return now()->subDays(7) <= $this->created_at;
+    }
+
+    public function getRatingAttribute()
+    {
+        return $this->ratings->where('user_id', auth()->id())->first();
+    }
+    public function getAvgRatingAttribute()
+    {
+        return $this->ratings->avg('rate');
     }
 }

@@ -18,8 +18,16 @@
                                 @if(Auth::check())
                                     <div class="rating-wrap pull-right">
                                         <div id="app">
-                                            <rating :book_id="{{$book->id}}" :user_id="{{auth()->id()}}"></rating>
+                                            <rating :user_rating="
+                                            @if(isset($book->rating->rate))
+                                            {{$book->rating->rate}}
+                                            @else
+                                                0
+                                            @endif
+                                            " :book_id="{{$book->id}}"
+                                                    :user_id="{{auth()->id()}}"></rating>
                                         </div>
+                                        <span>Average rating: {{$book->avg_rating}}</span>
                                     </div>
                                 @endif
                                 @foreach($book->authors as $author)

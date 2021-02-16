@@ -4,10 +4,10 @@
 <script>
 
 export default {
-    props: ['book_id', 'user_id'],
+    props: ['book_id', 'user_id', 'user_rating'],
     data() {
         return {
-            rate: '',
+            rate: this.user_rating,
         };
     },
     methods: {
@@ -20,17 +20,9 @@ export default {
             .then(response => alert('Success'))
             .catch(error => this.errors)
         },
-        getRating(){
-            axios.get('/ratings',
-                {
-                    booK_id: this.book_id,
-                })
-            .then(response => alert('success'))
-            .catch(error => this.errors)
-        }
     },
-    mounted(){
-        console.log(this.user_id)
+    mounted() {
+
     }
 }
 </script>

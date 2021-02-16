@@ -22,9 +22,4 @@ class RatingsController extends Controller
         );
         return response()->json(['rating' => $rating->rate]);
     }
-    public function show($id)
-    {
-        $ratings = Rating::findOrFail($id);
-        return response()->json(['ratings' => $ratings]);
-    }
 }
