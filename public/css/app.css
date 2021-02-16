@@ -10948,6 +10948,11 @@ a.text-dark:focus {
   position: absolute;
 }
 
+.img-wrap .card-img-top {
+  width: 192px;
+  height: 280px;
+}
+
 .discount-icon {
   float: right;
   position: relative;
