@@ -24,15 +24,9 @@ class ReviewsController extends Controller
         return redirect()->route('books.show', $book->slug)->with('success', 'Review added');
     }
 
-    public function edit($id)
+    public function edit(Review $review)
     {
-        $review = Review::find($id);
-        return response()->json(['data' => $review]);
-    }
-
-    public function show($id)
-    {
-
+        return view('dashboard.reviews.edit', compact('review'));
     }
 
     public function update(Request $request, $id)
@@ -40,7 +34,7 @@ class ReviewsController extends Controller
         $this->validate($request, [
             'review' => 'required|max:255',
         ]);
-        $review = Review::find($request->id);
+        $review = Review::find($id);
         $review->review = $request->input('review');
         $review->update();
         return redirect()->route('books.show', $review->book->slug)->with('success', 'Review updated');

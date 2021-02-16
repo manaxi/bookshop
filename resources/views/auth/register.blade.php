@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+@section('page_title')  Register @endsection
 @section('content')
     <div class="row justify-content-center">
         <div class="col-md-8 py-5">

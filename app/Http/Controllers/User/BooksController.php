@@ -61,7 +61,7 @@ class BooksController extends Controller
     public function create()
     {
         $authors = Author::get()->pluck('name', 'id');
-        $genres = Genre::get()->pluck('name', 'id');
+        $genres = Genre::all();
         return view('dashboard.books.create', compact('authors', 'genres'));
     }
 
@@ -77,6 +77,8 @@ class BooksController extends Controller
             'title' => 'required|max:255',
             'description' => 'required',
             'price' => 'required',
+            'genres' => 'required',
+            'authors' => 'required',
             'sale_price' => 'required',
             'cover_image' => 'mimes:jpeg,jpg,png,gif|nullable|max:1999',
         ]);
@@ -117,7 +119,10 @@ class BooksController extends Controller
 
         return redirect()->route('dashboard.books.index')->with('success', 'Book created.');
     }
+    public function show()
+    {
 
+    }
     /**
      * Show the form for editing the specified resource.
      *
@@ -130,8 +135,8 @@ class BooksController extends Controller
         if (auth()->user()->id !== $book->user_id) {
             return redirect()->route('dashboard.index')->with('error', 'Unauthorized Page');
         }
-        $authors = Author::get()->pluck('name', 'id');
-        $genres = Genre::get()->pluck('name', 'id');
+        $authors = Author::all();
+        $genres = Genre::all();
         return view('dashboard.books.edit', compact('book', 'authors', 'genres'));
     }
 
@@ -192,6 +197,5 @@ class BooksController extends Controller
         $delete = Book::where('id', $id)->delete();
         return redirect()->route('dashboard.books.index')->with('success', 'Book deleted');
     }
-
 
 }

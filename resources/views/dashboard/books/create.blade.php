@@ -3,88 +3,49 @@
 @section('content')
     <div class="container p-5">
         <h1 class="h3 mb-3">Add book to listing</h1>
-        {!! Form::open(array('route' => 'dashboard.books.store','method'=>'POST', 'enctype' => 'multipart/form-data')) !!}
-        <div class="form-group">
-            {{Form::label('title', 'Title')}}
-            {{Form::text('title', '', ['class' => 'form-control', 'placeholder' => 'Title'])}}
-            <p class="help-block"></p>
-            @if($errors->has('title'))
-                <p class="help-block">
-                    {{ $errors->first('title') }}
-                </p>
-            @endif
-        </div>
-        <div class="form-group row">
-            <div class="col-sm-6">
-                {{Form::label('price', 'Price')}}
-                {{Form::text('price', '', ['class' => 'form-control', 'placeholder' => 'Price'])}}
-                <p class="help-block"></p>
-                @if($errors->has('price'))
-                    <p class="help-block">
-                        {{ $errors->first('price') }}
-                    </p>
-                @endif
+        <form action="{{ route('dashboard.books.store')}} " method="POST" enctype="multipart/form-data">
+            @csrf
+            <x-label for="genre" :value="__('Title')"/>
+            <x-input id="title" name="title" placeholder="Title" :value="old('title')" type="text"/>
+            <div class="row">
+                <div class="col-sm-6">
+                    <x-label for="Price" :value="__('Price')"/>
+                    <x-input id="price" name="price" placeholder="Price" :value="old('price')" type="number"/>
+                </div>
+                <div class="col-sm-6 pl-5">
+                    <x-label for="discount" :value="__('Discount %')"/>
+                    <x-input id="sale_price" name="sale_price" placeholder="Discount" :value="old('sale_price')"
+                             type="number"/>
+                </div>
             </div>
-            <div class="col-sm-6">
-                {{Form::label('sale_price', 'Sale price')}}
-                {{Form::text('sale_price', '', ['class' => 'form-control', 'placeholder' => 'Price'])}}
-                <p class="help-block"></p>
-                @if($errors->has('sale_price'))
-                    <p class="help-block">
-                        {{ $errors->first('sale_price') }}
-                    </p>
-                @endif
+            <div class="row">
+                <div class="col-sm-6">
+                    <x-label for="Authors" :value="__('Authors (seperated by comma)')"/>
+                    <x-input id="authors" name="authors" placeholder="Authors" :value="old('authors')" type="text"/>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group row pl-4">
+                        <x-label for="Genres" :value="__('Genres')"/>
+                        <select name="genres[]" id="genres" class="form-control select2" multiple="multiple">
+                            @forelse($genres as $genre)
+                                <option value="{{$genre->id}}" {{ old('genres') == $genre->id ? 'selected' : '' }}>{{ $genre->name }}</option>
+                                @empty
+                                <option>No genres</option>
+                            @endforelse
+                        </select>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="form-group row">
-            <div class="col-sm-6">
-                {!! Form::label('authors', 'Authors (separated by comma)', ['class' => 'control-label']) !!}
-                {{Form::text('authors', '', ['class' => 'form-control', 'placeholder' => 'Authors'])}}
-                <p class="help-block"></p>
-                @if($errors->has('authors'))
-                    <p class="help-block">
-                        {{ $errors->first('authors') }}
-                    </p>
-                @endif
-            </div>
-            <div class="col-sm-6">
-                {!! Form::label('genres', 'Genres', ['class' => 'control-label']) !!}
-                {!! Form::select('genres[]', $genres, old('genres'), ['class' => 'form-control select2', 'multiple' => 'multiple', 'id' => 'selectall-genre' ]) !!}
-                <p class="help-block"></p>
-                @if($errors->has('genre'))
-                    <p class="help-block">
-                        {{ $errors->first('genres') }}
-                    </p>
-                @endif
-            </div>
-        </div>
-        <div class="form-group">
-            {{Form::label('description', 'Description')}}
-            {{Form::textarea('description', '', ['id' => 'editor', 'class' => 'form-control', 'placeholder' => 'Description Text'])}}
-        </div>
-
-
-        <div class="form-group">
-            {{Form::file('cover_image')}}
-        </div>
-        {{Form::submit('Submit', ['class'=>'btn btn-primary'])}}
-        {!! Form::close() !!}
+            <x-label for="description" :value="__('Book description')"/>
+            <x-textarea id="description" name="description" :value="old('description')" type="textarea"/>
+            <x-file-group fieldLabel="" fieldName="cover_image" fieldType="file"/>
+            <x-submit-button buttonLabel="Submit"></x-submit-button>
+        </form>
     </div>
 @endsection
 @section('script')
-    <script type="text/javascript"
-            src="https://cdnjs.cloudflare.com/ajax/libs/tagmanager/3.0.2/tagmanager.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
-    <script src="https://cdn.ckeditor.com/ckeditor5/25.0.0/classic/ckeditor.js"></script>
     <script>
-        ClassicEditor
-            .create(document.querySelector('#editor'))
-            .then(editor => {
-                console.log(editor);
-            })
-            .catch(error => {
-                console.error(error);
-            });
         $(document).ready(function () {
             $('.select2').select2();
         });
