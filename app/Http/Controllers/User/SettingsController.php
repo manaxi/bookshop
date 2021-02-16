@@ -34,7 +34,7 @@ class SettingsController extends Controller
         $user->surname = $request->input('surname');
         $user->email = $request->input('email');
         $user->save();
-        return redirect()->route('profile.show')->with('success', 'Profile was changed.');
+        return redirect()->route('settings.show')->with('success', 'Profile was changed.');
     }
 
     /**

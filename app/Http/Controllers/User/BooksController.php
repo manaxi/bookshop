@@ -17,40 +17,10 @@ class BooksController extends Controller
 {
     public function index()
     {
-        if (request()->ajax()) {
-
-            $data = Auth::user()->books()->select('*');
-            return datatables()->of($data)
-                ->addColumn('cover_image', function ($row) {
-                    $url = asset('storage/cover_images/' . $row->cover_image);
-                    return '<img src="' . $url . '" border="0" width="80" height="150" class="img-rounded" align="center" />';
-                })
-                ->addColumn('authors', function ($row) {
-                    $authors = array();
-                    foreach ($row->authors as $author) {
-                        $authors[] = $author->name;
-                    }
-                    return $authors;
-                })
-                ->addColumn('genres', function ($row) {
-                    $genres = array();
-                    foreach ($row->genres as $genre) {
-                        $genres[] = $genre->name;
-                    }
-                    return $genres;
-                })
-                ->addColumn('status', function ($row) {
-                    if ($row->status == '0')
-                        return "Waiting for approval";
-                    else
-                        return "Approved";
-                })
-                ->addColumn('action', 'dashboard.books.action')
-                ->rawColumns(['action', 'authors', 'genres', 'cover_image'])
-                ->addIndexColumn()
-                ->make(true);
-        }
-        return view('dashboard.index');
+        $books = auth()->user()->books()->with('authors')
+            ->latest()
+            ->paginate();
+        return view('dashboard.books.index', compact('books'));
     }
 
     /**
@@ -119,10 +89,12 @@ class BooksController extends Controller
 
         return redirect()->route('dashboard.books.index')->with('success', 'Book created.');
     }
+
     public function show()
     {
 
     }
+
     /**
      * Show the form for editing the specified resource.
      *

@@ -13,6 +13,11 @@
                         </aside>
                         <main class="col-md-8 pl-4">
                             <article>
+                                <div class="pull-right">
+                                    @if(auth()->id() == $book->user->id)
+                                        <a href="{{ route('dashboard.books.edit',$book->id) }}" class="btn btn-secondary">Edit book</a>
+                                    @endif
+                                </div>
                                 <h2 class="title">{{$book->title}}</h2>
                                 <hr>
                                 <div class="rating-wrap pull-right">
