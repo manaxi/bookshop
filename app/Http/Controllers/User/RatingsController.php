@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Book;
 use App\Models\Rating;
@@ -11,15 +12,19 @@ class RatingsController extends Controller
 {
     public function store(Request $request)
     {
-        $this->validate($request,[
-            'star' => 'required',
+        $this->validate($request, [
+            'rate' => 'required',
         ]);
-        $rating = Rating::create([
-            'rate' => $request->star,
-            'user_id' => Auth::id(),
-            'book_id' => $request->book_id,
-        ]);
+        $rating = Rating::updateOrCreate(
+            ['user_id' => $request->user_id,
+                'book_id' => $request->book_id],
+            ['rate' => $request->rate,]
+        );
         return response()->json(['rating' => $rating->rate]);
-       // return redirect()->route('show_book', $book->id)->with('success', 'Rating added');
+    }
+    public function show($id)
+    {
+        $ratings = Rating::findOrFail($id);
+        return response()->json(['ratings' => $ratings]);
     }
 }
