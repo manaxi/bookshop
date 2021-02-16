@@ -15,21 +15,18 @@
                             <article>
                                 <h2 class="title">{{$book->title}}</h2>
                                 <hr>
-                                @if(Auth::check())
-                                    <div class="rating-wrap pull-right">
+                                <div class="rating-wrap pull-right">
+                                    @if(Auth::check())
                                         <div id="app">
-                                            <rating :user_rating="
-                                            @if(isset($book->rating->rate))
-                                            {{$book->rating->rate}}
-                                            @else
-                                                0
-                                            @endif
-                                            " :book_id="{{$book->id}}"
-                                                    :user_id="{{auth()->id()}}"></rating>
+                                            <rating
+                                                :user_rating="@if(isset($book->rating->rate)) {{$book->rating->rate}} @else 0  @endif"
+                                                :book_id="{{$book->id}}" :user_id="{{auth()->id()}}"></rating>
                                         </div>
                                         <span>Average rating: {{$book->avg_rating}}</span>
-                                    </div>
-                                @endif
+                                    @else
+                                        <span>Average book rating: {{$book->avg_rating}}</span>
+                                    @endif
+                                </div>
                                 @foreach($book->authors as $author)
                                     {{$author->name}}
                                 @endforeach
@@ -46,14 +43,13 @@
                                         <span class="price h4">{{$book->price}} </span>
                                     @endif
                                 </div>
-                                {!! $book->description !!}
+                                {{$book->description}}
                                 <hr>
                             </article>
                             @if(Auth::check())
                                 <button id="addReport" type="button" class="btn btn-primary mt-3 pull-right"
                                         data-toggle="modal"
-                                        data-target="#reportModal">
-                                    Report book
+                                        data-target="#reportModal">Report book
                                 </button>
                             @endif
                         </main>
@@ -64,20 +60,19 @@
     </section>
     <section class="reviews col-md-12 mt-3">
         <article class="mb-3">
-            <h4>Reviews</h4>
             <div class="col-md-12">
                 @if(Auth::check())
-                    {{ Form::open(['route' => ['reviews.store'], 'method' => 'POST']) }}
-                    <div class="form-group row">
-                        {{Form::label('review', 'Review')}}
-                        {{Form::textarea('review', '', ['id' => 'editor', 'class' => 'form-control', 'placeholder' => 'Review text'])}}
-                        {{ Form::hidden('book_id', $book->id) }}
-                    </div>
-                    {{Form::submit('Submit', ['class'=>'btn btn-primary'])}}
-                    {{ Form::close() }}
+                    <form action="{{ route('reviews.store')}} " method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <x-label for="description" :value="__('Write review')"/>
+                        <x-textarea id="review" name="review" :value="old('review')" type="textarea"/>
+                        <x-input id="book_id" name="book_id" value="{{$book->id}}" type="hidden"/>
+                        <x-submit-button buttonLabel="Submit"></x-submit-button>
+                    </form>
                 @endif
             </div>
         </article>
+        <h4>Reviews</h4>
         @foreach($book->reviews as $review)
             <article class="mb-3">
                 <div class="text">
@@ -96,13 +91,8 @@
                               onsubmit="return confirm('Are your sure?');">
                             @csrf
                             @method('DELETE')
+                            <a href="{{route('reviews.edit', $review->id)}}" class="btn btn-primary">Edit</a>
                             <input type="hidden" name="book_id" value="{{ $book->id }}"/>
-                            <button id="editReview" type="button" class="btn btn-primary ml-3" data-toggle="modal"
-                                    data-target="#reviewModal"
-                                    data-id="{{ $review->id }}"
-                                    data-review="{{$review->review}}">
-                                Edit
-                            </button>
                             <button class="btn btn-danger ml-3" type="submit">Delete</button>
                         </form>
                     @endif
@@ -111,38 +101,6 @@
         @endforeach
     </section>
 
-
-    <!-- Modal -->
-    <div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Edit Review</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="{{route('reviews.update', 'test')}}" method="post">
-                        {{method_field('patch')}}
-                        {{csrf_field()}}
-                        <input type="hidden" name="id" id="id" value="">
-                        <div class="row">
-                            <div class="form-group col-lg">
-                                {{Form::label('review', 'Review')}}
-                                {!! Form::textarea('review', null, array('id'=> 'review', 'placeholder' => 'Review','class' => 'form-control')) !!}
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
     <!-- Modal -->
     <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -154,16 +112,13 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    {{ Form::open(['route' => ['reports.store'], 'method' => 'POST']) }}
-                    <div class="form-group col-lg">
-                        {{Form::label('review', 'Review')}}
-                        {{Form::textarea('body', '', ['id' => 'editor', 'class' => 'form-control', 'placeholder' => 'Review text'])}}
-                        {{ Form::hidden('book_id', $book->id) }}
-                    </div>
-                    <div class="modal-footer">
-                        {{Form::submit('Submit', ['class'=>'btn btn-primary'])}}
-                    </div>
-                    {{ Form::close() }}
+                    <form action="{{ route('reports.store')}} " method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <x-label for="description" :value="__('Report book')"/>
+                        <x-textarea id="body" name="body" :value="old('body')" type="textarea"/>
+                        <x-input id="book_id" name="book_id" value="{{$book->id}}" type="hidden"/>
+                        <x-submit-button buttonLabel="Submit"></x-submit-button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -172,35 +127,6 @@
 @endsection
 @section('script')
     <script>
-        $('#addStar').change('.star', function (e) {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                }
-            });
-            $.ajax({
-                type: 'POST',
-                cache: false,
-                dataType: 'JSON',
-                url: "{{route('ratings.store')}}",
-                data: {
-                    book_id: {{ $book->id }},
-                    star: $('#name').val(),
-                },
-                success: function (data) {
-                    console.log(data);
-                }
-            });
-        });
-        $('#reviewModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget) // Button that triggered the modal
-            var id = button.data('id');
-            var review = button.data('review');
-            console.log(id);
-            var modal = $(this);
-            modal.find('.modal-body #id').val(id);
-            modal.find('.modal-body #review').val(review);
-        });
         $('#reportModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget) // Button that triggered the modal
             var id = button.data('id');
@@ -208,6 +134,5 @@
             var modal = $(this);
             modal.find('.modal-body #id').val(id);
         });
-
     </script>
 @endsection

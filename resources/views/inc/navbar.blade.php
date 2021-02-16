@@ -50,7 +50,7 @@
                                 My Books
                             </a>
                             <a class="dropdown-item" href="{{ route('settings.show') }}">
-                                My profile
+                                Settings
                             </a>
                             <a class="dropdown-item" href="{{ route('logout') }}"
                                onclick="event.preventDefault();
