@@ -45,7 +45,7 @@ class BooksController extends Controller
     public function store(UserBookRequest $request, BookService $bookService)
     {
         $bookService->storeOrUpdate($request);
-         return redirect()->route('dashboard.books.index')->with('success', 'Book created.');
+        return redirect()->route('dashboard.books.index')->with('success', 'Book created.');
     }
 
     /**
