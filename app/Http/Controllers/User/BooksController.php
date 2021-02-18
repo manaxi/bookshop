@@ -17,40 +17,10 @@ class BooksController extends Controller
 {
     public function index()
     {
-        if (request()->ajax()) {
-
-            $data = Auth::user()->books()->select('*');
-            return datatables()->of($data)
-                ->addColumn('cover_image', function ($row) {
-                    $url = asset('storage/cover_images/' . $row->cover_image);
-                    return '<img src="' . $url . '" border="0" width="80" height="150" class="img-rounded" align="center" />';
-                })
-                ->addColumn('authors', function ($row) {
-                    $authors = array();
-                    foreach ($row->authors as $author) {
-                        $authors[] = $author->name;
-                    }
-                    return $authors;
-                })
-                ->addColumn('genres', function ($row) {
-                    $genres = array();
-                    foreach ($row->genres as $genre) {
-                        $genres[] = $genre->name;
-                    }
-                    return $genres;
-                })
-                ->addColumn('status', function ($row) {
-                    if ($row->status == '0')
-                        return "Waiting for approval";
-                    else
-                        return "Approved";
-                })
-                ->addColumn('action', 'dashboard.books.action')
-                ->rawColumns(['action', 'authors', 'genres', 'cover_image'])
-                ->addIndexColumn()
-                ->make(true);
-        }
-        return view('dashboard.index');
+        $books = auth()->user()->books()->with('authors')
+            ->latest()
+            ->paginate();
+        return view('dashboard.books.index', compact('books'));
     }
 
     /**
@@ -61,7 +31,7 @@ class BooksController extends Controller
     public function create()
     {
         $authors = Author::get()->pluck('name', 'id');
-        $genres = Genre::get()->pluck('name', 'id');
+        $genres = Genre::all();
         return view('dashboard.books.create', compact('authors', 'genres'));
     }
 
@@ -77,6 +47,8 @@ class BooksController extends Controller
             'title' => 'required|max:255',
             'description' => 'required',
             'price' => 'required',
+            'genres' => 'required',
+            'authors' => 'required',
             'sale_price' => 'required',
             'cover_image' => 'mimes:jpeg,jpg,png,gif|nullable|max:1999',
         ]);
@@ -115,7 +87,12 @@ class BooksController extends Controller
         $book->genres()->sync($request->genres);
         $book->authors()->sync($author_id);
 
-        return redirect()->route('dashboard.index')->with('success', 'Book created.');
+        return redirect()->route('dashboard.books.index')->with('success', 'Book created.');
+    }
+
+    public function show()
+    {
+
     }
 
     /**
@@ -130,8 +107,8 @@ class BooksController extends Controller
         if (auth()->user()->id !== $book->user_id) {
             return redirect()->route('dashboard.index')->with('error', 'Unauthorized Page');
         }
-        $authors = Author::get()->pluck('name', 'id');
-        $genres = Genre::get()->pluck('name', 'id');
+        $authors = Author::all();
+        $genres = Genre::all();
         return view('dashboard.books.edit', compact('book', 'authors', 'genres'));
     }
 
@@ -178,7 +155,7 @@ class BooksController extends Controller
         $book->save();
         $book->genres()->sync((array)$request->input('genres'));
         $book->authors()->sync((array)$request->input('authors'));
-        return redirect()->route('dashboard.index')->with('success', 'Book updated');
+        return redirect()->route('dashboard.books.index')->with('success', 'Book updated');
     }
 
     /**
@@ -190,8 +167,7 @@ class BooksController extends Controller
     public function destroy($id)
     {
         $delete = Book::where('id', $id)->delete();
-        return redirect()->route('dashboard.index')->with('success', 'Book deleted');
+        return redirect()->route('dashboard.books.index')->with('success', 'Book deleted');
     }
-
 
 }

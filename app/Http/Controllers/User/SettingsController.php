@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserUpdatePasswordRequest;
+use App\Http\Requests\UserUpdateProfileRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Auth;
@@ -12,7 +14,7 @@ class SettingsController extends Controller
 
     public function profile()
     {
-        return view('dashboard.settings.index', array('user' => Auth::user()));
+        return view('dashboard.profile.profile');
     }
 
     /**
@@ -21,19 +23,9 @@ class SettingsController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function updateProfile(Request $request)
+    public function updateProfile(UserUpdateProfileRequest $request)
     {
-        $user = Auth::user();
-        $this->validate($request, [
-            'name' => 'required',
-            'surname' => 'required',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-        ]);
-
-        $user->name = $request->input('name');
-        $user->surname = $request->input('surname');
-        $user->email = $request->input('email');
-        $user->save();
+        auth()->user()->update($request->validated());
         return redirect()->route('settings.profile')->with('success', 'Profile was changed.');
     }
 
@@ -43,21 +35,15 @@ class SettingsController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function updatePassword(Request $request)
+    public function updatePassword(UserUpdatePasswordRequest $request)
     {
-        $this->validate($request, [
-            'old_password' => 'required',
-            'password' => 'required|confirmed|min:6',
-        ]);
-
-        $data = $request->all();
-        if (!\Hash::check($data['old_password'], auth()->user()->password)) {
-            return back()->with('error', 'Current password is wrong.');
+        if (!\Hash::check($request->input('old_password'), auth()->user()->password)) {
+            return redirect()->route('settings.profile')->with('error', 'Current password is wrong.');
         } else {
             auth()->user()->update([
                 'password' => Hash::make($request->password)
             ]);
-            return back()->with('success', 'Password was changed.');
+            return redirect()->route('settings.profile')->with('success', 'Password was changed.');
         }
 
     }

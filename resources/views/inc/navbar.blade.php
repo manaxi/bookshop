@@ -10,7 +10,7 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <!-- Left Side Of Navbar -->
-            <form action="{{ route('search') }}" method="GET">
+            <form action="{{ route('index') }}" method="GET">
                 <div class="input-group">
                     <div class="form-outline">
                         <input type="search" id="form1" name="search" class="form-control" required/>
