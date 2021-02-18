@@ -3,7 +3,7 @@
 @section('content')
     <div class="container p-5">
         <h1 class="h3 mb-3">Add book to listing</h1>
-        <form method="POST" action="{{route('dashboard.books.update', $book->id)}} " enctype="multipart/form-data">
+        <form method="POST" action="{{route('dashboard.books.update', $book)}} " enctype="multipart/form-data">
             @csrf
             @method('PUT')
             <x-label for="genre" :value="__('Title')"/>
@@ -21,15 +21,8 @@
             </div>
             <div class="row">
                 <div class="col-sm-6">
-                    <div class="form-group row">
-                        <x-label for="Genres" :value="__('Genres')"/>
-                        <select name="authors[]" id="authors" class="form-control select2" multiple="multiple">
-                            @foreach($authors as $author)
-                                <option
-                                    value="{{ $author->id }}" {{ $book->authors->contains($author->id) ? 'selected' : '' }}>{{ $author->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                    <x-label for="Authors" :value="__('Authors (seperated by comma)')"/>
+                    <x-input id="authors" name="authors" placeholder="Authors" value="{{$authors}}" type="text"/>
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group row pl-4">

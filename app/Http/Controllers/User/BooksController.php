@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserBookRequest;
+use App\Services\BookService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
@@ -30,9 +32,8 @@ class BooksController extends Controller
      */
     public function create()
     {
-        $authors = Author::get()->pluck('name', 'id');
         $genres = Genre::all();
-        return view('dashboard.books.create', compact('authors', 'genres'));
+        return view('dashboard.books.create', compact('genres'));
     }
 
     /**
@@ -41,58 +42,10 @@ class BooksController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UserBookRequest $request, BookService $bookService)
     {
-        $this->validate($request, [
-            'title' => 'required|max:255',
-            'description' => 'required',
-            'price' => 'required',
-            'genres' => 'required',
-            'authors' => 'required',
-            'sale_price' => 'required',
-            'cover_image' => 'mimes:jpeg,jpg,png,gif|nullable|max:1999',
-        ]);
-
-        // Handle File Upload
-        if ($request->hasFile('cover_image')) {
-            // Get filename with the extension
-            $filenameWithExt = $request->file('cover_image')->getClientOriginalName();
-            // Get just filename
-            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-            // Get just ext
-            $extension = $request->file('cover_image')->getClientOriginalExtension();
-            // Filename to store
-            $fileNameToStore = $filename . '_' . time() . '.' . $extension;
-            // Upload Image
-            $path = $request->file('cover_image')->storeAs('public/cover_images', $fileNameToStore);
-        } else {
-            $fileNameToStore = 'noimage.jpg';
-        }
-
-        $book = new Book();
-        $book->title = $request->input('title');
-        $book->slug = Str::slug($request->input('title'));
-        $book->description = $request->input('description');
-        $book->user_id = auth()->id();
-        $book->status = '0';
-        $book->price = $request->input('price');
-        $book->sale_price = $request->input('sale_price');
-        $book->cover_image = $fileNameToStore;
-        $book->save();
-        $authors = explode(",", $request->authors);
-        foreach ($authors as $author) {
-            $data = Author::updateOrCreate(['name' => $author]);
-            $author_id[] = $data->id;
-        }
-        $book->genres()->sync($request->genres);
-        $book->authors()->sync($author_id);
-
+        $bookService->storeOrUpdate($request);
         return redirect()->route('dashboard.books.index')->with('success', 'Book created.');
-    }
-
-    public function show()
-    {
-
     }
 
     /**
@@ -101,13 +54,10 @@ class BooksController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Book $book)
     {
-        $book = Book::find($id);
-        if (auth()->user()->id !== $book->user_id) {
-            return redirect()->route('dashboard.index')->with('error', 'Unauthorized Page');
-        }
-        $authors = Author::all();
+        $this->authorize('editAndUpdate', $book);
+        $authors = implode(",", $book->authors()->pluck('name')->toArray());
         $genres = Genre::all();
         return view('dashboard.books.edit', compact('book', 'authors', 'genres'));
     }
@@ -119,42 +69,10 @@ class BooksController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UserBookRequest $request, Book $book, BookService $bookService)
     {
-        $this->validate($request, [
-            'title' => 'required|max:255',
-            'description' => 'required',
-            'price' => 'required',
-            'cover_image' => 'mimes:jpeg,jpg,png,gif|nullable|max:1999',
-        ]);
-        // Handle File Upload
-        if ($request->hasFile('cover_image')) {
-            // Get filename with the extension
-            $filenameWithExt = $request->file('cover_image')->getClientOriginalName();
-            // Get just filename
-            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-            // Get just ext
-            $extension = $request->file('cover_image')->getClientOriginalExtension();
-            // Filename to store
-            $fileNameToStore = $filename . '_' . time() . '.' . $extension;
-            // Upload Image
-            $path = $request->file('cover_image')->storeAs('public/cover_images', $fileNameToStore);
-        }
-
-        $book = Book::find($id);
-        $book->title = $request->input('title');
-        $book->slug = Str::slug($request->input('title'));
-        $book->description = $request->input('description');
-        $book->user_id = auth()->id();
-        $book->status = $book->status;
-        $book->price = $request->input('price');
-        $book->sale_price = $request->input('sale_price');
-        if ($request->hasFile('cover_image')) {
-            $book->cover_image = $fileNameToStore;
-        }
-        $book->save();
-        $book->genres()->sync((array)$request->input('genres'));
-        $book->authors()->sync((array)$request->input('authors'));
+        $this->authorize('editAndUpdate', $book);
+        $bookService->storeOrUpdate($request, $book);
         return redirect()->route('dashboard.books.index')->with('success', 'Book updated');
     }
 
@@ -164,9 +82,9 @@ class BooksController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Book $book)
     {
-        $delete = Book::where('id', $id)->delete();
+        $book->delete();
         return redirect()->route('dashboard.books.index')->with('success', 'Book deleted');
     }
 
