@@ -33,7 +33,7 @@ Route::group(['middleware' => ['role:User']], function () {
     Route::resource('reports', ReportsController::class);
 
     Route::prefix('/settings')->name('settings.')->group(function () {
-        Route::get('/', [SettingsController::class, 'profile'])->name('profile');
+        Route::get('/', [SettingsController::class, 'profile'])->name('show');
         Route::post('settings', [SettingsController::class, 'updateProfile'])->name('updateProfile');
         Route::post('settings/password', [SettingsController::class, 'updatePassword'])->name('changePassword');
     });
