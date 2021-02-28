@@ -84,6 +84,7 @@ class BooksController extends Controller
      */
     public function destroy(Book $book)
     {
+        $this->authorize('editAndUpdate', $book);
         $book->delete();
         return redirect()->route('dashboard.books.index')->with('success', 'Book deleted');
     }
